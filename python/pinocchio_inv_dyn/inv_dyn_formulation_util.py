@@ -223,8 +223,8 @@ class InvDynFormulation (object):
         self.ddqMax     = zeros(self.na); 
         self.ddqStop    = zeros(self.na);
         if(self.freeFlyer):
-            self.qMin[:6]   = -1e100;   # set bounds for the floating base
-            self.qMax[:6]   = +1e100;
+            self.qMin[:7]   = -1e100;   # set bounds for the floating base
+            self.qMax[:7]   = +1e100;
             self.tauMax     = self.r.model.effortLimit[6:];
         else:
             self.tauMax     = self.r.model.effortLimit;
