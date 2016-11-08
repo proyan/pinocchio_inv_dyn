@@ -5,7 +5,6 @@ from numpy.polynomial.polynomial import polyval
 from  numpy.linalg import pinv
 from pinocchio import SE3, log3, exp3, Motion
 from derivative_filters import computeSecondOrderPolynomialFitting
-import copy
 
 def norm(v1, v2):
   return np.linalg.norm(v2.T-v1.T)
@@ -28,7 +27,7 @@ class RefTrajectory (object):
     return self._dim
 
   def __call__ (self, t):
-    return np.matrix ([]).reshape (0, 0)
+    return (np.matrix ([]).reshape (0, 0),)*3
     
 ''' An se3 trajectory with constant state and zero velocity/acceleration. '''
 class ConstantSE3Trajectory (object):
@@ -37,6 +36,8 @@ class ConstantSE3Trajectory (object):
     self._name = name
     self._dim = 6
     self._Mref = Mref;
+    self._v_ref = Motion.Zero()
+    self._a_ref = Motion.Zero()
 
   @property
   def dim(self):
@@ -46,7 +47,7 @@ class ConstantSE3Trajectory (object):
     self._Mref = Mref;
 
   def __call__ (self, t):
-    return (self._Mref, Motion.Zero(), Motion.Zero());
+    return (self._Mref, self._v_ref, self._a_ref);
     
 ''' An Nd trajectory with constant state and zero velocity/acceleration. '''
 class ConstantNdTrajectory (object):
