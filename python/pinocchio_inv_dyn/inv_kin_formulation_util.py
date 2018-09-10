@@ -425,17 +425,18 @@ class InvKinFormulation(object):
     self.setPositions(q, updateConstraintReference=False);
     self.setVelocities(v);
 
-    self.r.computeAllTerms(q, v);
+    #self.r.computeAllTerms(q, v);
+    se3.computeAllTerms(self.r.model, self.r.data, q, v)
     self.r.framesKinematics(q);
-    self.x_com = self.r.com(q, update_kinematics=False);
-    self.J_com = self.r.Jcom(q, update_kinematics=False);
-    self.M = self.r.mass(q, update_kinematics=False);
+    self.x_com = self.r.com(q)#, update_kinematics=False);
+    self.J_com = self.r.Jcom(q)#, update_kinematics=False);
+    self.M = self.r.mass(q)#, update_kinematics=False);
     if (self.ACCOUNT_FOR_ROTOR_INERTIAS):
       if (self.freeFlyer):
         self.M[6:, 6:] += self.Md;
       else:
         self.M += self.Md;
-    self.h = self.r.bias(q, v, update_kinematics=False);
+    self.h = self.r.bias(q, v)#, update_kinematics=False);
     #        self.h          += self.JOINT_FRICTION_COMPENSATION_PERCENTAGE*np.dot(np.array(JOINT_VISCOUS_FRICTION), self.v);
     self.dx_com = np.dot(self.J_com, self.v);
     com_z = self.x_com[2];  # -np.mean(self.contact_points[:,2]);

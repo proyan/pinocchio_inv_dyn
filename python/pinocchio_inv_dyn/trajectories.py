@@ -1,3 +1,5 @@
+#AUTHOR: Justin Carpentier
+
 import numpy as np
 import numpy.matlib
 from numpy.polynomial.polynomial import polyval
@@ -566,7 +568,8 @@ class FootRefTrajectory (RefTrajectory):
   def __init__ (self, time_intervals, foot_placements, z_amplitude=0.05, name="Foot ref trajectory"):
     RefTrajectory.__init__ (self,name)
     self.time_intervals = time_intervals
-    self.foot_placements = foot_placements
+    self.foot_placements = [(np.array(foot_placements[i].translation).squeeze(), np.array(foot_placements[i+1].translation).squeeze()) for i in xrange(len(foot_placements)-1)]
+    self.foot_placements.append((np.array(foot_placements[-1].translation).squeeze(), np.array(foot_placements[-1].translation).squeeze()))
     self.z_amplitude = z_amplitude
     self._R = np.identity(3) 
 
@@ -590,8 +593,8 @@ class FootRefTrajectory (RefTrajectory):
       ddxyz_polycoeff = []
 
       foot_end_positions = self.foot_placements[k]
-      if foot_end_positions[0] == foot_end_positions[1]:
-        P0 = foot_end_positions.translation;
+      if (foot_end_positions[0] == foot_end_positions[1]).all():
+        P0 = foot_end_positions[0];
         xyz_polycoeff.append(P0[0])
         xyz_polycoeff.append(P0[1])
         xyz_polycoeff.append(P0[2])
@@ -700,6 +703,7 @@ class FootRefTrajectory (RefTrajectory):
       dtau_dt = 1.
 
     # Evaluate X
+    #print "evaluating t_in, tau, xyz_polycoeff[0]", t, tau, xyz_polycoeff[0]
     x = polyval(tau, xyz_polycoeff[0])
     if len(dxyz_polycoeff[0]):
       x_dot = polyval(tau, dxyz_polycoeff[0]) * dtau_dt

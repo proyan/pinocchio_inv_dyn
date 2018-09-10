@@ -72,25 +72,33 @@ class SE3Task(Task):
     
   def framePosition(self):
     return self.robot.framePosition(self._frame_id);
-    
+
+  def frameVelocity(self):
+    f = self.robot.model.frames[self._frame_id]
+    return f.placement.actInv(self.robot.data.v[f.parent])
+  
+  def frameAcceleration(self):
+    f = self.robot.model.frames[self._frame_id]
+    return f.placement.actInv(self.robot.data.a[f.parent])  
+
   def positionError(self, t):
-    oMi = self.robot.framePosition(self._frame_id);
+    oMi = self.robot.data.oMi[self.robot.model.frames[self._frame_id].parent].act(self.robot.model.frames[self._frame_id].placement);
     M_ref, v_ref, a_ref  = self._ref_trajectory(t);
     p_error = errorInSE3(oMi, M_ref);
     return p_error.vector[self._mask];
     
   def velocityError(self, t):
-    oMi = self.robot.framePosition(self._frame_id);
+    oMi = self.robot.data.oMi[self.robot.model.frames[self._frame_id].parent].act(self.robot.model.frames[self._frame_id].placement);
     self._gMl.rotation = oMi.rotation
-    v_frame = self.robot.frameVelocity(self._frame_id);
+    v_frame = self.frameVelocity();
     M_ref, v_ref, a_ref  = self._ref_trajectory(t);
     v_error = v_frame - self._gMl.actInv(v_ref)
     return v_error.vector[self._mask];
 
   def dyn_value(self, t, q, v, local_frame = True):
     # Get the current configuration of the link
-    oMi = self.robot.framePosition(self._frame_id);
-    v_frame = self.robot.frameVelocity(self._frame_id)
+    oMi = self.robot.data.oMi[self.robot.model.frames[self._frame_id].parent].act(self.robot.model.frames[self._frame_id].placement);
+    v_frame = self.frameVelocity()
     
     # Get the reference trajectory
     M_ref, v_ref, a_ref  = self._ref_trajectory(t)
@@ -101,11 +109,11 @@ class SE3Task(Task):
     # Compute error acceleration desired
     p_error= errorInSE3(oMi, M_ref);
     v_error = v_frame - self._gMl.actInv(v_ref)
-    drift = self.robot.frameAcceleration(self._frame_id)
+    drift = self.frameAcceleration()
     drift.linear += np.cross(v_frame.angular.T, v_frame.linear.T).T    
     a_des = -self.kp * p_error.vector -self.kv * v_error.vector + self._gMl.actInv(a_ref).vector
 
-    J = self.robot.frameJacobian(q, self._frame_id, False)
+    J = self.robot.frameJacobian(q, self._frame_id, se3.ReferenceFrame.LOCAL)
     
     if(local_frame==False):
         drift = self._gMl.act(drift);

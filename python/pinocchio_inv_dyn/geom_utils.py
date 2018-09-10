@@ -3,7 +3,7 @@ from numpy import zeros, sqrt, array, vstack
 import numpy as np
 #from math import cos, sin, tan, atan, pi
 import matplotlib.pyplot as plt
-import cdd
+#import cdd
 import plot_utils as plut
 from polytope_conversion_utils import poly_face_to_span, NotPolyFace
 

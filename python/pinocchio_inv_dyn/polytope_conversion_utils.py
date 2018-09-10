@@ -1,4 +1,4 @@
-from cdd import Matrix, Polyhedron, RepType
+#from cdd import Matrix, Polyhedron, RepType
 from numpy import array, hstack, zeros, ones
 import numpy as np
 

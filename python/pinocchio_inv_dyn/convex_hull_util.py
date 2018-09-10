@@ -6,7 +6,7 @@ Created on Fri Jul  3 17:52:35 2015
 
 @author: adelpret
 """
-import cdd
+#import cdd
 import numpy as np
 import matplotlib.pyplot as plt
 

@@ -49,7 +49,7 @@ def computeAccLimitsFromPosLimits(q, dq, qMin, qMax, ddqMax, dt, verbose=True):
     ddqUB = np.matlib.zeros((n,1));
     ddqLB = np.matlib.zeros((n,1));
     
-    ind  = (dq<=0.0).A.squeeze();
+    ind  = np.matrix((dq<=0.0)).A.squeeze();
     ind2 = np.logical_and(ind, (ddqMin_q3<minus_dq_over_dt).A.squeeze());
     ind3 = np.logical_and(ind, np.logical_and(np.logical_not(ind2), (q!=qMin).A.squeeze()));
     ind4 = np.logical_and(ind, np.logical_and(np.logical_not(ind2), np.logical_not(ind3)));

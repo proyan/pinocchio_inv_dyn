@@ -53,7 +53,6 @@ class RobotWrapper(PinocchioRobotWrapper):
     def framePosition(self, index):
         f = self.model.frames[index]
         return self.data.oMi[f.parent].act(f.placement)
-
     def frameVelocity(self, index):
         f = self.model.frames[index]
         return f.placement.actInv(self.data.v[f.parent])
