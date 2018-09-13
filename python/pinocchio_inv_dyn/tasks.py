@@ -70,8 +70,8 @@ class SE3Task(Task):
     assert isinstance(M_ref, SE3), "M_ref is not an element of class SE3"
     self._M_ref = M_ref
     
-  def framePosition(self):
-    return self.robot.framePosition(self._frame_id);
+  def framePlacement(self):
+    return self.robot.framePlacement(self._frame_id);
 
   def frameVelocity(self):
     f = self.robot.model.frames[self._frame_id]

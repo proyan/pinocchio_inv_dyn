@@ -137,7 +137,7 @@ class InvKinFormulation(object):
                                                          self.rigidContactConstraints_mu[i], \
                                                          self.rigidContactConstraints_p[i],
                                                          self.rigidContactConstraints_N[i], \
-                                                         self.rigidContactConstraints[i].framePosition().rotation);
+                                                         self.rigidContactConstraints[i].framePlacement().rotation);
         self.rigidContactConstraints_m_in[i] = Bfi.shape[0];
         tmp = zeros((Bfi.shape[0], self.k));
         dim = self.rigidContactConstraints[i].dim;
@@ -320,7 +320,7 @@ class InvKinFormulation(object):
       i = 0;
       for (constr, P, N, mu) in zip(self.rigidContactConstraints, self.rigidContactConstraints_p,
                                     self.rigidContactConstraints_N, self.rigidContactConstraints_mu):
-        oMi = self.r.framePosition(constr._frame_id);
+        oMi = self.r.framePlacement(constr._frame_id);
         for j in range(P.shape[1]):
           self.contact_points[:, i] = oMi.act(P[:, j]);
           self.contact_normals[:, i] = oMi.rotation * N[:, j];
@@ -427,7 +427,7 @@ class InvKinFormulation(object):
 
     #self.r.computeAllTerms(q, v);
     se3.computeAllTerms(self.r.model, self.r.data, q, v)
-    self.r.framesKinematics(q);
+    self.r.framesForwardKinematics(q);
     self.x_com = self.r.com(q)#, update_kinematics=False);
     self.J_com = self.r.Jcom(q)#, update_kinematics=False);
     self.M = self.r.mass(q)#, update_kinematics=False);

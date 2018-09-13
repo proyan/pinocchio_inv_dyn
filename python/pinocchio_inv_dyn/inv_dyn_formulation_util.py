@@ -405,7 +405,7 @@ class InvDynFormulation (object):
         self.setVelocities(v);
         
         self.r.computeAllTerms(q, v);
-        self.r.framesKinematics(q);
+        self.r.framesForwardKinematics(q);
         self.x_com    = self.r.com(q, update_kinematics=False);
         self.J_com    = self.r.Jcom(q, update_kinematics=False);
         self.M        = self.r.mass(q, update_kinematics=False);
